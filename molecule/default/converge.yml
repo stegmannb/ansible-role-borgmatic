@@ -3,6 +3,9 @@
 
   hosts: all
 
+  vars:
+    borg_source_directories: "/etc"
+
   tasks:
     - name: "Include role"
       include_role:

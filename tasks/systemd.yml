@@ -1,0 +1,18 @@
+---
+- name: Install the systemd service.
+  ansible.builtin.template:
+    src: templates/borgmatic.service.j2
+    dest: /etc/systemd/system/borgmatic.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Enable the borgmatic timer.
+
+- name: Install the systemd timer.
+  ansible.builtin.template:
+    src: templates/borgmatic.timer.j2
+    dest: /etc/systemd/system/borgmatic.timer
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Enable the borgmatic timer.

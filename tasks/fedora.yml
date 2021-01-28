@@ -1,0 +1,10 @@
+---
+- name: "Install required system packages."
+  dnf:
+    name: "{{ item }}"
+    update_cache: true
+    state: present
+    install_weak_deps: true
+  with_items:
+    - borgbackup
+    - borgmatic

@@ -1,4 +1,43 @@
 ---
-- name: Example task
-  debug:
-    msg: Running example task
+- name: Check if running on an compatible platform.
+  assert:
+    that: >-
+      ansible_distribution == 'Archlinux'
+      or ansible_distribution == 'Debian'
+      or ansible_distribution == 'Ubuntu'
+      or ansible_os_family == 'Debian'
+    fail_msg: "This platform is not supported by this role: {{ ansible_distribution }}"
+    quiet: true
+
+- name: Check if the system uses systemd.
+  assert:
+    that: ansible_service_mgr == 'systemd'
+    fail_msg: "This role expects systemd."
+
+    quiet: true
+
+- name: Execute distribution dependent setup.
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution|lower }}-{{ ansible_distribution_major_version|lower }}.yml"
+    - "{{ ansible_distribution|lower }}.yml"
+    - "{{ ansible_os_family|lower }}.yml"
+
+- name: Create the borgmatic configuration directory.
+  file:
+    path: /etc/borgmatic
+    state: directory
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Create the borgmatic configuration file.
+  template:
+    src: templates/config.yaml.j2
+    dest: /etc/borgmatic/config.yaml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Execute systemd setup.
+  include_tasks: "systemd.yml"

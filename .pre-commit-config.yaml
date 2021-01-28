@@ -89,10 +89,10 @@ repos:
               .vscode/|
           )$
 
-  - repo: https://github.com/robertdebock/pre-commit
-    rev: v1.1.2
-    hooks:
-      - id: ansible_role_find_unused_variable
+  # - repo: https://github.com/robertdebock/pre-commit
+  #   rev: v1.1.2
+  #   hooks:
+  #     - id: ansible_role_find_unused_variable
 
   - repo: https://github.com/robertdebock/pre-commit
     rev: v1.1.2
