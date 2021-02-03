@@ -1,5 +1,5 @@
 #jinja2: lstrip_blocks: "True", trim_blocks: "True"
-# Full config: https://torsion.org/borgmatic/docs/reference/config.yaml
+# Full config: https://torsion.org/borgmatic/docs/reference/configuration/
 location:
     source_directories:
 {% for dir in borg_source_directories %}
@@ -8,6 +8,7 @@ location:
 
     # Stay in same file system (do not cross mount points).
     one_file_system: {{ borg_one_file_system }}
+
     repositories:
 {% if borg_repository is iterable and (borg_repository is not string and borg_repository is not mapping) %}
   {% for repo in borg_repository %}
@@ -15,6 +16,9 @@ location:
   {% endfor %}
 {% elif borg_repository is defined and borg_repository is string %}
         - {{ borg_repository }}
+{% endif %}
+{% if borgbase_repository is defined %}
+        - {{ borgbase_repository.repoPath }}
 {% endif %}
 
     # Store atime into archive.
@@ -69,7 +73,7 @@ storage:
     # Type of compression to use when creating archives. See
     # https://borgbackup.readthedocs.org/en/stable/usage.html#borg-create for details.
     # Defaults to no compression.
-    compression: auto,zstd
+    compression: {{ borg_compression }}
 
     # Remote network upload rate limit in kiBytes/second.
 {% if borg_remote_rate_limit %}

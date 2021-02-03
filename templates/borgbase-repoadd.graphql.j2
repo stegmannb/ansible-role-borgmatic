@@ -1,0 +1,55 @@
+mutation(
+  $name: String
+  $quota: Int
+  $quotaEnabled: Boolean
+  $appendOnlyKeys: [String]
+  $fullAccessKeys: [String]
+  $alertDays: Int
+  $region: String
+  $borgVersion: String
+) {
+  repoAdd(
+    name: $name
+    quota: $quota
+    quotaEnabled: $quotaEnabled
+    appendOnlyKeys: $appendOnlyKeys
+    fullAccessKeys: $fullAccessKeys
+    alertDays: $alertDays
+    region: $region
+    borgVersion: $borgVersion
+  ) {
+    repoAdded {
+      id
+      name
+      server {
+        id
+        hostname
+        region
+        public
+        fingerprintRsa
+        fingerprintEcdsa
+        fingerprintEd25519
+      }
+      quota
+      quotaEnabled
+      alertDays
+      region
+      borgVersion
+      appendOnly
+      appendOnlyKeys
+      fullAccessKeys
+      rsyncKeys
+      totalSize
+      totalCsize
+      totalChunks
+      totalUniqueChunks
+      uniqueCsize
+      uniqueSize
+      encryption
+      lastModified
+      uid
+      repoPath
+      currentUsage
+    }
+  }
+}

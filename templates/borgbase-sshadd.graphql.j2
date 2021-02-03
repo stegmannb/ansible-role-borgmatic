@@ -1,0 +1,16 @@
+mutation(
+  $name: String
+  $keyData: String
+) {
+  sshAdd(
+    name: $name
+    keyData: $keyData
+  ) {
+    keyAdded {
+      id
+      name
+      keyData
+      comment
+    }
+  }
+}

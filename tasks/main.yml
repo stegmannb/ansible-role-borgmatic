@@ -9,11 +9,18 @@
     fail_msg: "This platform is not supported by this role: {{ ansible_distribution }}"
     quiet: true
 
+- name: Check encryption settings.
+  assert:
+    that: >-
+      borg_encryption_passphrase|length > 0
+      or borg_unencrypted
+    fail_msg: "You must set the borg_encryption_passphrase variable or set borg_unencrypted to true."
+    quiet: true
+
 - name: Check if the system uses systemd.
   assert:
     that: ansible_service_mgr == 'systemd'
     fail_msg: "This role expects systemd."
-
     quiet: true
 
 - name: Execute distribution dependent setup.
@@ -23,21 +30,21 @@
     - "{{ ansible_distribution|lower }}.yml"
     - "{{ ansible_os_family|lower }}.yml"
 
-- name: Create the borgmatic configuration directory.
-  file:
-    path: /etc/borgmatic
-    state: directory
-    owner: root
-    group: root
-    mode: "0644"
+- name: Configure SSH.
+  include_tasks: "ssh.yml"
 
-- name: Create the borgmatic configuration file.
-  template:
-    src: templates/config.yaml.j2
-    dest: /etc/borgmatic/config.yaml
-    owner: root
-    group: root
-    mode: "0644"
+- name: Configure BorgBase.
+  include_tasks: "borgbase.yml"
+  when: borgbase
+# - name: Configure borgmatic.
+#   include_tasks: "borgmatic.yml"
 
-- name: Execute systemd setup.
-  include_tasks: "systemd.yml"
+# - name: Initialize the Borg repository.
+#   command: borgmatic init --encryption=repokey-blake2
+#   when: borgmatic_init
+#   register: borgmatic_init_result
+#   # If the stout is empty then the repository already existed and the command did nothing.
+#   changed_when: borgmatic_init_result.stdout_lines|length > 0
+
+# - name: Configure systemd.
+#   include_tasks: "systemd.yml"

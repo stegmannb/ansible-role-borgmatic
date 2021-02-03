@@ -1,0 +1,7 @@
+---
+- name: Generate SSH key.
+  community.crypto.openssh_keypair:
+    path: "{{ borg_sshkey }}"
+    type: ed25519
+    comment: "borg@{{ inventory_hostname }}"
+  register: ssh_key_result

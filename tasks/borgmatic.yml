@@ -1,0 +1,16 @@
+---
+- name: Create the borgmatic configuration directory.
+  file:
+    path: /etc/borgmatic
+    state: directory
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Create the borgmatic configuration file.
+  template:
+    src: templates/config.yaml.j2
+    dest: /etc/borgmatic/config.yaml
+    owner: root
+    group: root
+    mode: "0644"
