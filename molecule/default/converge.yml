@@ -5,6 +5,7 @@
 
   vars:
     borg_source_directories: "/etc"
+    borg_encryption_passphrase: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=64') }}"
 
   tasks:
     - name: "Include role"
