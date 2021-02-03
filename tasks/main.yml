@@ -36,15 +36,16 @@
 - name: Configure BorgBase.
   include_tasks: "borgbase.yml"
   when: borgbase
-# - name: Configure borgmatic.
-#   include_tasks: "borgmatic.yml"
 
-# - name: Initialize the Borg repository.
-#   command: borgmatic init --encryption=repokey-blake2
-#   when: borgmatic_init
-#   register: borgmatic_init_result
-#   # If the stout is empty then the repository already existed and the command did nothing.
-#   changed_when: borgmatic_init_result.stdout_lines|length > 0
+- name: Configure borgmatic.
+  include_tasks: "borgmatic.yml"
 
-# - name: Configure systemd.
-#   include_tasks: "systemd.yml"
+- name: Initialize the Borg repository.
+  command: borgmatic init --encryption=repokey-blake2
+  when: borgmatic_init
+  register: borgmatic_init_result
+  # If the stout is empty then the repository already existed and the command did nothing.
+  changed_when: borgmatic_init_result.stdout_lines|length > 0
+
+- name: Configure systemd.
+  include_tasks: "systemd.yml"
