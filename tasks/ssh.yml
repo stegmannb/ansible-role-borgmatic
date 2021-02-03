@@ -4,6 +4,7 @@
     path: "{{ borg_sshkey | dirname }}"
     state: directory
     recurse: yes
+    mode: "700"
 
 - name: Generate SSH key.
   community.crypto.openssh_keypair:

@@ -37,7 +37,7 @@
 
 - name: Check if the BorgBase repository already exists.
   set_fact:
-    borgbase_repo: "{{ borgbase_repolist_result.json.data.repoList|json_query(filter)|first }}"
+    borgbase_repository: "{{ borgbase_repolist_result.json.data.repoList|json_query(filter)|first }}"
   vars:
     filter: >-
       [?name == '{{ borgbase_repo_name }}']
@@ -93,29 +93,29 @@
 - name: Check if the BorgBase SSH key has access to the respository.
   assert:
     that: >-
-      borgbase_sshkey.id in borgbase_repo.appendOnlyKeys
-      or borgbase_sshkey.id in borgbase_repo.fullAccessKeys
+      borgbase_sshkey.id in borgbase_repository.appendOnlyKeys
+      or borgbase_sshkey.id in borgbase_repository.fullAccessKeys
     fail_msg: >-
       The existing SSH key "{{ ssh_key_result.comment }}" does not have access to the existing
       repostitory "{{ borgbase_repo_name }}".
     quiet: true
   when: >-
     not borgbase_add_key
-    and borgbase_repo is defined
+    and borgbase_repository is defined
     and borgbase_sshkey is defined
 
 - name: Check if the BorgBase SSH key has the correct access level.
   assert:
     that: >-
-      (not borgbase_full_access_key and not borgbase_sshkey.id in borgbase_repo.fullAccessKeys)
-      or (borgbase_full_access_key and not borgbase_sshkey.id in borgbase_repo.appendOnlyKeys)
+      (not borgbase_full_access_key and not borgbase_sshkey.id in borgbase_repository.fullAccessKeys)
+      or (borgbase_full_access_key and not borgbase_sshkey.id in borgbase_repository.appendOnlyKeys)
     fail_msg: >-
       The existing SSH key "{{ ssh_key_result.comment }}" has
-      {% if borgbase_sshkey.id in borgbase_repo.appendOnlyKeys %}append only{% else %}full{% endif %}
+      {% if borgbase_sshkey.id in borgbase_repository.appendOnlyKeys %}append only{% else %}full{% endif %}
       access to the repostitory "{{ borgbase_repo_name }}".
     quiet: true
   when: >-
-    borgbase_repo is defined
+    borgbase_repository is defined
     and borgbase_sshkey is defined
 
 - name: Add the local SSH key to BorgBase.
@@ -160,7 +160,7 @@
     return_content: true
     body_format: json
     body: "{{ body }}"
-  when: borgbase_repo is not defined
+  when: borgbase_repository is not defined
   changed_when: >-
     borgbase_repoadd_result.status == 200
     and borgbase_repoadd_result.json.data is not none
@@ -182,7 +182,7 @@
 
 - name: Register the created BorgBase repository. # noqa 503
   set_fact:
-    borgbase_repo: "{{ borgbase_repoadd_result.json.data.repoAdd.repoAdded }}"
+    borgbase_repository: "{{ borgbase_repoadd_result.json.data.repoAdd.repoAdded }}"
   when: borgbase_repoadd_result.changed
 
 - name: Add the SSH key to BorgBase repository.
@@ -197,8 +197,8 @@
     body: "{{ body }}"
   when: >-
     borgbase_add_key
-    and not borgbase_sshkey.id in borgbase_repo.appendOnlyKeys
-    and not borgbase_sshkey.id in borgbase_repo.fullAccessKeys
+    and not borgbase_sshkey.id in borgbase_repository.appendOnlyKeys
+    and not borgbase_sshkey.id in borgbase_repository.fullAccessKeys
   changed_when: >-
     borgbase_repoedit_ssh_result.status == 200
     and borgbase_repoedit_ssh_result.json.data is not none
@@ -211,14 +211,16 @@
     body:
       query: '{{ lookup("template", "templates/borgbase-repoedit-ssh.graphql.j2") | trim }}'
       variables:
-        id: "{{ borgbase_repo.id }}"
-        appendOnlyKeys: "{{ (borgbase_repo.appendOnlyKeys + [ borgbase_sshkey.id ]) if not (borgbase_full_access_key) else (borgbase_repo.appendOnlyKeys) }}"
-        fullAccessKeys: "{{ (borgbase_repo.fullAccessKeys + [ borgbase_sshkey.id ]) if (borgbase_full_access_key) else (borgbase_repo.fullAccessKeys) }}"
+        id: "{{ borgbase_repository.id }}"
+        appendOnlyKeys: >-
+          "{{ (borgbase_repository.appendOnlyKeys + [ borgbase_sshkey.id ]) if not (borgbase_full_access_key) else (borgbase_repository.appendOnlyKeys) }}"
+        fullAccessKeys: >-
+          "{{ (borgbase_repository.fullAccessKeys + [ borgbase_sshkey.id ]) if (borgbase_full_access_key) else (borgbase_repository.fullAccessKeys) }}"
   register: borgbase_repoedit_ssh_result
 
 - name: Register the edited BorgBase repository. # noqa 503
   set_fact:
-    borgbase_repo: "{{ borgbase_repoedit_ssh_result.json.data.repoEdit.repoEdited }}"
+    borgbase_repository: "{{ borgbase_repoedit_ssh_result.json.data.repoEdit.repoEdited }}"
   when: borgbase_repoedit_ssh_result.changed
 
 - name: Keyscan the BorgBase server.
@@ -226,7 +228,7 @@
     cmd: ssh-keyscan -ted25519 {{ borgbase_backup_server }}
   changed_when: false
   vars:
-    borgbase_backup_server: "{{ borgbase_repo.repoPath.split('@')[1].split(':')[0] }}"
+    borgbase_backup_server: "{{ borgbase_repository.repoPath.split('@')[1].split(':')[0] }}"
   register: borgbase_backup_server
 
 - name: Add the BorgBase server to known_hosts.
