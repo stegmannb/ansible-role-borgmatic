@@ -2,9 +2,9 @@
 Description=Run borgmatic backup
 
 [Timer]
-OnCalendar=hourly
+OnCalendar=daily
 Persistent=true
-RandomizedDelaySec=10min
+RandomizedDelaySec=60min
 
 [Install]
 WantedBy=timers.target
