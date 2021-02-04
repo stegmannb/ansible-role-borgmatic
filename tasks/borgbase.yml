@@ -227,7 +227,7 @@
   command:
     cmd: ssh-keyscan -ted25519 {{ borgbase_keyscan_result }}
   changed_when: false
-  failed_when: "{{ borgbase_keyscan_result.stdout_lines|length != 1 }}"
+  failed_when: borgbase_keyscan_result.stdout_lines|length != 1
   vars:
     borgbase_keyscan_result: "{{ borgbase_repository.repoPath.split('@')[1].split(':')[0] }}"
   register: borgbase_keyscan_result
