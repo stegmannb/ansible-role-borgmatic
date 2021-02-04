@@ -225,14 +225,15 @@
 
 - name: Keyscan the BorgBase server.
   command:
-    cmd: ssh-keyscan -ted25519 {{ borgbase_backup_server }}
+    cmd: ssh-keyscan -ted25519 {{ borgbase_keyscan_result }}
   changed_when: false
+  failed_when: "{{ borgbase_keyscan_result.stdout_lines|length != 1 }}"
   vars:
-    borgbase_backup_server: "{{ borgbase_repository.repoPath.split('@')[1].split(':')[0] }}"
-  register: borgbase_backup_server
+    borgbase_keyscan_result: "{{ borgbase_repository.repoPath.split('@')[1].split(':')[0] }}"
+  register: borgbase_keyscan_result
 
 - name: Add the BorgBase server to known_hosts.
   known_hosts:
     path: /root/.ssh/known_hosts
-    name: "{{ borgbase_backup_server.stdout.split(' ')[0] }}"
-    key: "{{ borgbase_backup_server.stdout }}"
+    name: "{{ borgbase_keyscan_result.stdout.split(' ')[0] }}"
+    key: "{{ borgbase_keyscan_result.stdout }}"
