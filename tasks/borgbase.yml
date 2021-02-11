@@ -231,6 +231,9 @@
   vars:
     borgbase_keyscan_result: "{{ borgbase_repository.repoPath.split('@')[1].split(':')[0] }}"
   register: borgbase_keyscan_result
+  retries: 10
+  delay: 30
+  until: borgbase_keyscan_result is not failed
 
 - name: Add the BorgBase server to known_hosts.
   known_hosts:
