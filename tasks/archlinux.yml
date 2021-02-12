@@ -2,6 +2,7 @@
 - name: "Install required system packages."
   community.general.pacman:
     name:
+      - openssh
       - borg
       - borgmatic
       - python-llfuse
