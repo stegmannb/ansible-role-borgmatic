@@ -13,11 +13,11 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
     pre_build_image: true
-lint: |
-  set -e
-  yamllint .
-  ansible-lint .
-  flake8
+# lint: |
+#   set -e
+#   yamllint .
+#   ansible-lint .
+#   flake8
 provisioner:
   name: ansible
 verifier:
