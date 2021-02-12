@@ -4,6 +4,8 @@
   apt:
     name:
       - openssh-client
+      - python3-venv
+      - python3-pip
       - borgbackup
       # - borgmatic
     update_cache: true
