@@ -225,18 +225,33 @@
 
 - name: Keyscan the BorgBase server.
   command:
-    cmd: ssh-keyscan -ted25519 {{ borgbase_keyscan_result }}
+    cmd: ssh-keyscan -ted25519 {{ borgbase_host }}
   changed_when: false
   failed_when: borgbase_keyscan_result.stdout_lines|length != 1
   vars:
-    borgbase_keyscan_result: "{{ borgbase_repository.repoPath.split('@')[1].split(':')[0] }}"
+    borgbase_host: "{{ borgbase_repository.repoPath.split('@')[1].split(':')[0] }}"
   register: borgbase_keyscan_result
   retries: 10
   delay: 30
   until: borgbase_keyscan_result is not failed
+  when: borgbase_hostkey is not defined
+
+- name: Register the BorgBase hostkey.
+  set_fact:
+    borgbase_hostkey: "{{ borgbase_host }} {{ borgbase_hostkey.split(' ')[1:] | join(' ') }}"
+  vars:
+    borgbase_host: "{{ borgbase_repository.repoPath.split('@')[1].split(':')[0] }}"
+  when: borgbase_hostkey is defined
+
+- name: Register the BorgBase hostkey.
+  set_fact:
+    borgbase_hostkey: "{{ borgbase_keyscan_result.stdout }}"
+  vars:
+    borgbase_host: "{{ borgbase_repository.repoPath.split('@')[1].split(':')[0] }}"
+  when: borgbase_hostkey is not defined
 
 - name: Add the BorgBase server to known_hosts.
   known_hosts:
     path: /root/.ssh/known_hosts
-    name: "{{ borgbase_keyscan_result.stdout.split(' ')[0] }}"
-    key: "{{ borgbase_keyscan_result.stdout }}"
+    name: "{{ borgbase_hostkey.split(' ')[0] }}"
+    key: "{{ borgbase_hostkey }}"
