@@ -5,6 +5,7 @@
       ansible_distribution == 'Archlinux'
       or ansible_distribution == 'Debian'
       or ansible_distribution == 'Ubuntu'
+      or ansible_distribution == 'Fedora'
       or ansible_os_family == 'Debian'
     fail_msg: "This platform is not supported by this role: {{ ansible_distribution }}"
     quiet: true
