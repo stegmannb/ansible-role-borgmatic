@@ -1,10 +1,11 @@
 ---
-- name: Generate the ssh directory for root
+- name: Generate the ssh directory for root.
   file:
     path: "{{ borg_sshkey | dirname }}"
     state: directory
     recurse: yes
     mode: "700"
+  tags: molecule-idempotence-notest
 
 - name: Generate SSH key.
   community.crypto.openssh_keypair:
