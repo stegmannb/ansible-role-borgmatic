@@ -41,7 +41,6 @@ jobs:
           - fedora33
           - fedora32
           - debian10
-          - debian9
     steps:
       - name: Cancel an already running workflow.
         uses: fkirc/skip-duplicate-actions@master
