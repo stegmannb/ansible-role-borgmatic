@@ -42,7 +42,7 @@
   include_tasks: "borgmatic.yml"
 
 - name: Initialize the Borg repository.
-  command: borgmatic init --encryption=repokey-blake2
+  command: "{{ borgmatic_exec_result.stat.path }} init --encryption=repokey-blake2"
   when: borgmatic_init
   register: borgmatic_init_result
   # If the stout is empty then the repository already existed and the command did nothing.
