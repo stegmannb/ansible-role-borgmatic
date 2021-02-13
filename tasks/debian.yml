@@ -11,7 +11,7 @@
     state: present
     install_recommends: true
 
-- name: "Remove required system packages."
+- name: "Remove out of date system packages."
   apt:
     name:
       - borgmatic

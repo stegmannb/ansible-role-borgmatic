@@ -1,19 +1,9 @@
 ---
 - name: Find the borgmatic executable.
-  ansible.builtin.stat:
-    path: "{{ lookup('first_found', findme, errors='ignore') }}"
+  command:
+    cmd: "which borgmatic"
   register: borgmatic_exec_result
-  vars:
-    findme:
-      - /root/.local/bin/borgmatic
-      - /usr/local/bin/borgmatic
-      - /usr/bin/borgmatic
-
-- name: Check if the borgmatic executable has been found.
-  assert:
-    that: borgmatic_exec_result.stat.exists
-    quiet: true
-    fail_msg: Could not find the borgmatic executable.
+  changed_when: false
 
 - name: Create the borgmatic configuration directory.
   file:
