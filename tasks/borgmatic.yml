@@ -11,9 +11,7 @@
 
 - name: Check if the borgmatic executable has been found.
   assert:
-    that: >-
-      borgmatic_exec_result.stat.exists
-      and borgmatic_exec_result.stat.executable
+    that: borgmatic_exec_result.stat.exists
     quiet: true
     fail_msg: Could not find the borgmatic executable.
 
