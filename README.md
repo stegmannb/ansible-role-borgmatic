@@ -1,4 +1,4 @@
-# Ansible Template Role
+# Ansible Borgmatic Role
 
 [![License: MIT](https://img.shields.io/github/license/stegmannb/ansible-role-borgmatic)](https://github.com/stegmannb/ansible-role-borgmatic/blob/master/LICENSE)
 ![Continuous Integration](https://github.com/stegmannb/ansible-role-borgmatic/workflows/Continuous%20Integration/badge.svg)

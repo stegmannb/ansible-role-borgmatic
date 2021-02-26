@@ -2,9 +2,11 @@
 Description=Run borgmatic backup
 
 [Timer]
-OnCalendar=daily
+{% for oncalendar in borgmatic_systemd_oncalendar %}
+OnCalendar={{ oncalendar }}
+{% endfor %}
 Persistent=true
-RandomizedDelaySec=60min
+RandomizedDelaySec={{ borgmatic_systemd_randomizeddelaysec }}
 
 [Install]
 WantedBy=timers.target

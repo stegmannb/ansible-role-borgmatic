@@ -1,33 +1,36 @@
 ---
+borg_compression: auto,zstd
+borg_encryption_passcommand: false
+borg_encryption_passphrase: ""
+borg_exclude_from: []
+borg_exclude_patterns: []
+borg_lock_wait_time: 5
+borg_one_file_system: true
+borg_remote_path: false
+borg_remote_rate_limit: 0
+borg_retention_policy: null
+borg_ssh_command: false
 borg_sshkey: /root/.ssh/borg_id_ed25519
+borg_unencrypted: false
 borgbase: false
 borgbase_add_key: true
 borgbase_full_access_key: false
 borgbase_reponame: "{{ inventory_hostname }}"
-borgmatic_init: true
-borg_unencrypted: false
-borg_encryption_passphrase: ""
-borg_exclude_patterns: []
-borg_compression: auto,zstd
-borgmatic_failure_command:
-  - echo "`date` - Error while creating a backup."
-borgmatic_before_backup_command:
-  - echo "`date` - Starting backup."
 borgmatic_after_backup_command:
   - echo "`date` - Finished backup."
+borgmatic_before_backup_command:
+  - echo "`date` - Starting backup."
+borgmatic_check_last: 3
 borgmatic_checks:
   - repository
   - archives
-borgmatic_check_last: 3
+borgmatic_failure_command:
+  - echo "`date` - Error while creating a backup."
+borgmatic_hooks: []
+borgmatic_init: true
+borgmatic_relocated_repo_access_is_ok: false
 borgmatic_store_atime: true
 borgmatic_store_ctime: true
-borgmatic_relocated_repo_access_is_ok: false
-borgmatic_hooks: []
-borg_one_file_system: true
-borg_exclude_from: []
-borg_encryption_passcommand: false
-borg_lock_wait_time: 5
-borg_ssh_command: false
-borg_remote_path: false
-borg_remote_rate_limit: 0
-borg_retention_policy:
+borgmatic_systemd_oncalendar:
+  - daily
+borgmatic_systemd_randomizeddelaysec: 60min
