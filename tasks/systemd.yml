@@ -6,7 +6,7 @@
     owner: root
     group: root
     mode: "0644"
-    validate: "systemd-analyze verify %s"
+    # validate: "systemd-analyze verify %s"
 
 - name: Install the systemd timer.
   ansible.builtin.template:
@@ -15,7 +15,7 @@
     owner: root
     group: root
     mode: "0644"
-    validate: "systemd-analyze verify %s"
+    # validate: "systemd-analyze verify %s"
 
 - name: Enable the borgmatic timer.
   ansible.builtin.systemd:
