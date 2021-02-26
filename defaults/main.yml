@@ -31,6 +31,4 @@ borgmatic_init: true
 borgmatic_relocated_repo_access_is_ok: false
 borgmatic_store_atime: true
 borgmatic_store_ctime: true
-borgmatic_systemd_oncalendar:
-  - daily
-borgmatic_systemd_randomizeddelaysec: 60min
+borgmatic_systemd_oncalendar: daily

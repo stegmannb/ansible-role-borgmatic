@@ -2,11 +2,34 @@
 Description=Run borgmatic backup
 
 [Timer]
+{% if borgmatic_systemd_onactivesec is defined %}
+OnActiveSec={{ borgmatic_systemd_onactivesec }}
+{% endif %}
+{% if borgmatic_systemd_onbootsec is defined %}
+OnBootSec={{ borgmatic_systemd_onbootsec }}
+{% endif %}
+{% if borgmatic_systemd_onstartupsec is defined %}
+OnStartupSec={{ borgmatic_systemd_onstartupsec }}
+{% endif %}
+{% if borgmatic_systemd_onunitactivesec is defined %}
+OnUnitActiveSec={{ borgmatic_systemd_onunitactivesec }}
+{% endif %}
+{% if borgmatic_systemd_onunitinactivesecr is defined %}
+OnUnitInactiveSec={{ borgmatic_systemd_onunitinactivesecr }}
+{% endif %}
+{% if borgmatic_systemd_oncalendar is defined %}
+{% if borgmatic_systemd_oncalendar is iterable and borgmatic_systemd_oncalendar is not string %}
 {% for oncalendar in borgmatic_systemd_oncalendar %}
 OnCalendar={{ oncalendar }}
 {% endfor %}
+{% else %}
+OnCalendar={{ borgmatic_systemd_oncalendar }}
+{% endif %}
+{% endif %}
 Persistent=true
+{% if borgmatic_systemd_randomizeddelaysec is defined %}
 RandomizedDelaySec={{ borgmatic_systemd_randomizeddelaysec }}
+{% endif %}
 
 [Install]
 WantedBy=timers.target
