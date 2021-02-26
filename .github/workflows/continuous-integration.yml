@@ -50,16 +50,11 @@ jobs:
         with:
           path: "stegmannb.borgmatic"
 
-      - name: Set up Python 3.
-        uses: actions/setup-python@v2
+      - name: Molecule
+        uses: gofrolist/molecule-action@v2
         with:
-          python-version: "3.x"
-
-      - name: Install test dependencies.
-        run: pip3 install -r requirements-dev.txt
-
-      - name: Run Molecule tests.
-        run: molecule test
+          molecule_command: test
+          molecule_working_dir: "stegmannb.borgmatic"
         env:
           PY_COLORS: "1"
           ANSIBLE_FORCE_COLOR: "1"
