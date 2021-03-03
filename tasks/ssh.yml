@@ -1,7 +1,7 @@
 ---
 - name: Generate the ssh directory for root.
   file:
-    path: "{{ borg_sshkey | dirname }}"
+    path: "{{ borg_sshkey_file | dirname }}"
     state: directory
     recurse: yes
     mode: "700"
@@ -9,7 +9,7 @@
 
 - name: Generate SSH key.
   community.crypto.openssh_keypair:
-    path: "{{ borg_sshkey }}"
+    path: "{{ borg_sshkey_file }}"
     type: ed25519
     comment: "borg@{{ inventory_hostname }}"
-  register: ssh_key_result
+  register: borg_sshkey

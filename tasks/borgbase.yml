@@ -68,25 +68,25 @@
     that: borgbase_sshlist_result.json.data.sshList|json_query(filter)|length <= 1
     fail_msg: >-
       There are {{ borgbase_sshlist_result.json.data.sshList|json_query(filter)|length }}
-      ssh keys named "{{ ssh_key_result.comment }}" on BorgBase.
+      ssh keys named "{{ borg_sshkey.comment }}" on BorgBase.
     quiet: true
   vars:
     filter: >-
-      [?name == '{{ ssh_key_result.comment }}']
+      [?name == '{{ borg_sshkey.comment }}']
 
 - name: Check if the BorgBase SSH key already exists.
   set_fact:
     borgbase_sshkey: "{{ borgbase_sshlist_result.json.data.sshList|json_query(filter)|first }}"
   vars:
     filter: >-
-      [?name == '{{ ssh_key_result.comment }}']
+      [?name == '{{ borg_sshkey.comment }}']
   when: borgbase_sshlist_result.json.data.sshList|json_query(filter)|length == 1
 
 - name: Check if the BorgBase SSH key matches the local key.
   assert:
-    that: borgbase_sshkey.keyData == ssh_key_result.public_key
+    that: borgbase_sshkey.keyData == borg_sshkey.public_key
     fail_msg: >-
-      The existing SSH key "{{ ssh_key_result.comment }}" on BorgBase does not match your local SSH key.
+      The existing SSH key "{{ borg_sshkey.comment }}" on BorgBase does not match your local SSH key.
     quiet: true
   when: borgbase_sshkey is defined
 
@@ -96,7 +96,7 @@
       borgbase_sshkey.id in borgbase_repository.appendOnlyKeys
       or borgbase_sshkey.id in borgbase_repository.fullAccessKeys
     fail_msg: >-
-      The existing SSH key "{{ ssh_key_result.comment }}" does not have access to the existing
+      The existing SSH key "{{ borg_sshkey.comment }}" does not have access to the existing
       repostitory "{{ borgbase_repo_name }}".
     quiet: true
   when: >-
@@ -110,7 +110,7 @@
       (not borgbase_full_access_key and not borgbase_sshkey.id in borgbase_repository.fullAccessKeys)
       or (borgbase_full_access_key and not borgbase_sshkey.id in borgbase_repository.appendOnlyKeys)
     fail_msg: >-
-      The existing SSH key "{{ ssh_key_result.comment }}" has
+      The existing SSH key "{{ borg_sshkey.comment }}" has
       {% if borgbase_sshkey.id in borgbase_repository.appendOnlyKeys %}append only{% else %}full{% endif %}
       access to the repostitory "{{ borgbase_repo_name }}".
     quiet: true
@@ -141,8 +141,8 @@
   vars:
     body:
       variables:
-        name: "{{ ssh_key_result.comment }}"
-        keyData: "{{ ssh_key_result.public_key }}"
+        name: "{{ borg_sshkey.comment }}"
+        keyData: "{{ borg_sshkey.public_key }}"
       query: '{{ lookup("template", "templates/borgbase-sshadd.graphql.j2") | trim }}'
 
 - name: Register the added SSH key.
