@@ -5,6 +5,8 @@
     name:
       - openssh-client
       - borgbackup
+      - python3-ruamel.yaml
+      - python3-pykwalify
       - "{{ 'python3-pip' if ansible_python.version.major == 3 else 'python-pip' }}"
     update_cache: true
     cache_valid_time: "{{ apt_cache_valid_time | default('0') }}"
